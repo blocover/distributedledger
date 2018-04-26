@@ -2,9 +2,12 @@
 
 const series = require('async/series')
 const IPFS = require('ipfs')
+var fs = require('fs');
 
 const node = new IPFS()
 let fileMultihash
+
+var filename = 'meta-ukulele.mp3.txt'; // testfile
 
 series([
   (cb) => node.on('ready', cb),
@@ -14,9 +17,11 @@ series([
     cb()
   }),
 
-  (cb) => node.files.add({
-    path: 'meta-ukulele.mp3.txt',
-    content: Buffer.from('Hello Universal 101')
+  (cb) => node.files.add(
+      
+    {
+    path: filename,
+    content: fs.readFileSync(filename)
   }, (err, filesAdded) => {
     if (err) { return cb(err) }
 
