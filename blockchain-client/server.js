@@ -356,10 +356,12 @@ storeSong = async (file) => {
     // store IPFS
     let result = await ipfs.files.add(fileOptions);
 
-    // TODO
+    // example ipfs hash QmNqnJJ99KnhwdXR7sqcRomPw6zUkcStKnwC8fsBQnp2yK
+    // has to be converted for bytes32 recognition
     let songHash = ipfsHashToBytes32(result[0].hash);
 
     // store Ethereum
+    // example hash 0x07766cc7169f5e9bacecea0e2bb08fdc9a0beb4d57f6cb26f960e73fa94a17ee
     return registerSong(songHash);
 }
 
@@ -370,6 +372,7 @@ donate = async (userId, amount) => {
     return tnx;
 }
 
+/// API ///
 
 // curl -d '{"id":"1", "artistName":"DJ Bobo"}' -H "Content-Type: application/json" -X POST http://localhost:8080/abi/registerUser
 router.post('/registerUser', async (req, res) => {
