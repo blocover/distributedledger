@@ -22,7 +22,6 @@ contract Blocover {
     
     // donation token
     mapping(address => uint) public donations;
-    mapping(uint => User) public userIdToUsers;
     
 
     event SongPlayer(int songIndex);
@@ -31,16 +30,29 @@ contract Blocover {
     event Play(uint songIndex, uint256 playCounter);
     event Donation(address userAddress, uint amount);
     
+    event DepositFunds(address,uint);
+    
 
     constructor() public {
         owner = msg.sender;
     }
     
+    function depositFunds() public payable returns(bool success) {
+        emit DepositFunds(msg.sender, msg.value); 
+        return true;
+    }
+    
     function donate(address to) public payable{
         //address to = userIdToUsers[userId].userAddress;
         //donations[donationAddress] += msg.value;
-        to.transfer(msg.value);
-        //emit Donation(to, msg.value);
+
+        if(!to.send(msg.value)) {
+            // Some failure code
+            emit Donation(to, msg.value);
+        }
+
+        //to.transfer(msg.value);
+        
     }
     
     function registerSong(bytes songHash) public {
@@ -61,7 +73,12 @@ contract Blocover {
         emit RegisterUser(userIndex,artistName);
     }
     
-    function play(uint songIndex) public {
+    function playByIndex(uint songIndex) public {
+        songs[songIndex].playCounter = songs[songIndex].playCounter + 1;
+        emit Play(songIndex,songs[songIndex].playCounter);
+    }
+    
+    function playByAddress(uint songIndex) public {
         songs[songIndex].playCounter = songs[songIndex].playCounter + 1;
         emit Play(songIndex,songs[songIndex].playCounter);
     }
